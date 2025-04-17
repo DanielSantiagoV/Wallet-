@@ -1,0 +1,14 @@
+{
+    "yhwrrsuarez": {
+        "Viajes": {
+            "Monto": 20000.0,
+            "Cuenta_origen": "Daviplata"
+        }
+    },
+    "javierduarte": {
+        "Diciembre": {
+            "Monto": 30000.0,
+            "Cuenta_origen": "Banco de Bogota"
+        }
+    }
+}
