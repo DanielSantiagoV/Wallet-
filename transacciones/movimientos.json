@@ -1,0 +1,20 @@
+{
+    "yhwrrsuarez": [
+        {
+            "Fecha": "2025-04-10 19:23:06",
+            "Tipo": "Pago",
+            "Monto": 20000.0,
+            "Destinatario": "danielvinasco",
+            "Estado": "Aprobado"
+        }
+    ],
+    "danielvinasco": [
+        {
+            "Fecha": "2025-04-10 19:23:06",
+            "Tipo": "Dep\u00f3sito",
+            "Monto": 20000.0,
+            "Destinatario": "yhwrrsuarez",
+            "Estado": "Aprobado"
+        }
+    ]
+}
