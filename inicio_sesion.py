@@ -1,41 +1,64 @@
-# Importación de módulos necesarios
-from data import *  # Importa funciones de manejo de datos
+"""
+User login module for Campers Wallet application.
+Handles user authentication with improved security and validation.
+"""
 
-def inicio_sesion():    
-    """
-    Función para manejar el proceso de inicio de sesión de usuarios.
-    Verifica las credenciales y permite el acceso al sistema.
-    """
-    # Carga los datos de usuarios registrados
-    registros = cargar_datos("registros.json")
+from typing import Optional
+import data
+from utils import verify_password, get_valid_input, print_success, print_error, print_warning, print_info
 
-    # Verifica si hay usuarios registrados
+
+def inicio_sesion() -> None:
+    """
+    Main function for user login.
+    Verifies user credentials and allows access to the system.
+    """
+    print_info("=== INICIO DE SESIÓN ===")
+    
+    # Load registered users
+    registros = data.load_data("users")
+    
+    # Check if there are any registered users
     if not registros:
-        print("***** No hay usuarios registrados. Por favor, regístrese primero. *****")
-        return  
-
-    # Solicita credenciales al usuario
-    print("\n***** INICIO DE SESIÓN *****")  
-    usuario = input("Ingrese su usuario: ").strip()  
-
-    # Busca el usuario en los registros
-    usuario_actual = None  
-    for nombre, datos in registros.items():  
-        if datos["Usuario"].strip().lower() == usuario.lower():
-            usuario_actual = nombre  
-            break  
-
-    # Verifica las credenciales
-    if usuario_actual:  
-        contrasenia = input("Ingrese su contraseña: ").strip()  
-        if registros[usuario_actual]["Contraseña"] == contrasenia:  
-            print(f"***** Inicio de sesión exitoso. Bienvenido de nuevo, {usuario_actual} *****")
-            
-            # Importa y ejecuta el menú principal después del inicio de sesión exitoso
-            from utilidades_menu import ejecucion_menu_inicio  
-            ejecucion_menu_inicio(usuario_actual)
-        else:  
-            print("***** Error: Contraseña incorrecta. *****")  
-    else:  
-        print("***** Usuario no encontrado. Primero debe registrarse. *****")  
+        print_warning("No hay usuarios registrados. Por favor, regístrese primero.")
+        return
+    
+    # Get username
+    usuario = get_valid_input("Ingrese su usuario: ", "str")
+    if not usuario:
+        print_error("El usuario no puede estar vacío.")
+        return
+    
+    # Find user by username
+    usuario_actual = None
+    for nombre, datos in registros.items():
+        if datos.get("Usuario", "").strip().lower() == usuario.lower():
+            usuario_actual = nombre
+            break
+    
+    # Verify user exists
+    if not usuario_actual:
+        print_error("Usuario no encontrado. Primero debe registrarse.")
+        return
+    
+    # Get password
+    contrasenia = get_valid_input("Ingrese su contraseña: ", "str")
+    if not contrasenia:
+        print_error("La contraseña no puede estar vacía.")
+        return
+    
+    # Verify password
+    stored_password_hash = registros[usuario_actual].get("Contraseña", "")
+    if not stored_password_hash:
+        print_error("Error: Contraseña no encontrada en el sistema.")
+        return
+    
+    if verify_password(contrasenia, stored_password_hash):
+        print_success(f"Inicio de sesión exitoso. ¡Bienvenido de nuevo, {usuario_actual}!")
+        
+        # Import and execute main menu after successful login
+        from utilidades_menu import ejecucion_menu_inicio
+        ejecucion_menu_inicio(usuario_actual)
+    else:
+        print_error("Contraseña incorrecta.")
  

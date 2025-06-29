@@ -1,307 +1,207 @@
-# 💰 Campers Wallet - Sistema de Gestión Financiera Personal 
+# 💰 Campers Wallet
 
-## 🌟 ¡Bienvenido a Campers Wallet!
-
-¡Gracias por elegir Campers Wallet, tu aliado en la gestión financiera personal! 🎉
-
-Este proyecto nace con el objetivo de simplificar y hacer más eficiente la administración de tus finanzas. Con una interfaz intuitiva y funcionalidades poderosas, te ayudamos a:
-
-- 📊 Mantener un control detallado de tus ingresos y gastos
-- 💰 Organizar tus ahorros de manera efectiva
-- 💳 Gestionar múltiples cuentas bancarias
-- 🌍 Realizar conversiones de divisas
-- 📈 Seguir el progreso de tus metas financieras
-
-Nuestro compromiso es proporcionarte una herramienta segura, fácil de usar y que se adapte a tus necesidades financieras. ¡Únete a nuestra comunidad y comienza tu viaje hacia una mejor gestión financiera! 🚀
-
----
-
-## 🎯 ¿Qué es Campers Wallet?
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│  💼  Sistema Integral de Gestión Financiera Personal        │
-│  ────────────────────────────────────────────────────────  │
-│                                                             │
-│  📋 Control total de tus finanzas en un solo lugar         │
-│  💰 Gestión inteligente de cuentas y transacciones         │
-│  🏦 Bolsillos personalizados para cada meta de ahorro      │
-│  💱 Conversión de divisas en tiempo real                    │
-│  📊 Seguimiento detallado de ingresos y gastos             │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-```
-
-Campers Wallet es una solución completa diseñada para simplificar y optimizar la administración de tus finanzas personales. Con una interfaz intuitiva y funcionalidades avanzadas, te permite:
-
-- 🎯 **Control Total**: Gestiona todas tus cuentas y transacciones desde una única plataforma
-- 💡 **Inteligencia Financiera**: Toma decisiones informadas con análisis detallados
-- 🔒 **Seguridad Garantizada**: Tus datos están protegidos con las mejores prácticas
-- 🌐 **Accesibilidad**: Disponible en múltiples plataformas y dispositivos
-- 📈 **Crecimiento Continuo**: Actualizaciones constantes con nuevas funcionalidades
-
-## 📋 Tabla de Contenidos
-- [🚀 Características](#-características)
-- [📂 Estructura del Proyecto](#-estructura-del-proyecto)
-- [🛠️ Requisitos](#-requisitos)
-- [📦 Instalación](#-instalación)
-- [🚀 Uso](#-uso)
-- [🎥 Demostración Visual](#-demostración-visual)
-- [📱 Compatibilidad](#-compatibilidad)
-- [💡 Tips y Trucos](#-tips-y-trucos)
-- [❓ Preguntas Frecuentes](#-preguntas-frecuentes)
-- [👥 Comunidad](#-comunidad)
-- [🚀 Próximas Características](#-próximas-características)
-- [🎨 Personalización Avanzada](#-personalización-avanzada)
-- [🎯 Guía de Contribución](#-guía-de-contribución)
-- [👥 Roles del Equipo](#-roles-del-equipo)
-- [🏆 Reconocimientos](#-reconocimientos)
+Un sistema de billetera digital completo desarrollado en Python que permite gestionar finanzas personales de manera eficiente y segura.
 
 ## 🚀 Características
-- 👤 Sistema de autenticación con registro e inicio de sesión
-- 💳 Gestión completa de cuentas bancarias
-- 💰 Realización de transacciones (pagos, retiros, depósitos)
-- 🏦 Control de bolsillos para ahorro
-- 💱 Conversión de divisas
-- 📊 Visualización de movimientos y saldos
-- 📋 Listado de cuentas registradas
-- 📈 Seguimiento de gastos e ingresos
-- 💾 Almacenamiento seguro de datos en JSON
 
-## 📂 Estructura del Proyecto
-```
-CampersWallet/
-│
-├── 📁 gestion_cuentas/         # Gestión de cuentas bancarias
-│   └── registro_cuentas.py     # Funciones para gestionar cuentas
-│
-├── 📁 transacciones/           # Gestión de transacciones
-│   └── transacciones.py        # Funciones para operaciones financieras
-│
-├── 📁 bolsillos/               # Gestión de bolsillos
-│   └── bolsillos.py            # Funciones para manejar bolsillos
-│
-├── 📁 divisas/                 # Conversión de divisas
-│   └── divisas.py              # Funciones para conversión de monedas
-│
-├── 📄 main.py                  # Punto de entrada principal
-├── 📄 utilidades_menu.py       # Menús y navegación
-├── 📄 registro.py              # Registro de usuarios
-├── 📄 inicio_sesion.py         # Autenticación de usuarios
-├── 📄 data.py                  # Funciones de manejo de datos
-└── 📄 registros.json           # Almacenamiento de datos
-```
+### 👤 Gestión de Usuarios
+- **Registro seguro**: Validación de datos y contraseñas hasheadas
+- **Inicio de sesión**: Autenticación segura con verificación de credenciales
+- **Validación de edad**: Solo usuarios mayores de 18 años
+- **Validación de email**: Formato de correo electrónico verificado
 
-## 🛠️ Requisitos
-- 🐍 Python 3.8+
-- 📚 Bibliotecas:
-  - 🔄 requests: Para comunicación con APIs externas
-  - 🎨 colorama: Para colores y estilos en la consola
-  - 📝 json: Para manejo de archivos JSON
-  - 📅 datetime: Para manejo de fechas
-  - 💻 os: Para operaciones del sistema
+### 💳 Gestión de Cuentas
+- **Registro de cuentas**: Múltiples cuentas bancarias por usuario
+- **Modificación**: Actualizar información de cuentas existentes
+- **Eliminación**: Remover cuentas con confirmación
+- **Visualización**: Ver saldos y cuentas registradas
+- **Saldo total**: Cálculo automático del saldo combinado
 
-## 📦 Instalación
-1. 📥 Clona este repositorio:
-   ```
-   git clone https://github.com/tu-usuario/CampersWallet.git
+### 💸 Transacciones
+- **Pagos**: Transferencias entre usuarios
+- **Retiros**: Extraer dinero de cuentas
+- **Depósitos**: Agregar fondos a cuentas
+- **Historial**: Registro completo de movimientos
+- **Validación**: Verificación de fondos antes de transacciones
+
+### 🏦 Bolsillos de Ahorro
+- **Creación**: Nuevos bolsillos con nombre personalizado
+- **Gestión de fondos**: Agregar y retirar dinero
+- **Eliminación**: Cerrar bolsillos con transferencia automática
+- **Visualización**: Estado actual de todos los bolsillos
+
+### 💱 Conversión de Divisas
+- **Tiempo real**: Tasas de cambio actualizadas via API
+- **Múltiples monedas**: USD, EUR, GBP, JPY, CAD
+- **Cálculo preciso**: Conversiones con 6 decimales
+- **Manejo de errores**: Gestión robusta de fallos de conexión
+
+## 📋 Requisitos
+
+- Python 3.7 o superior
+- Conexión a internet (para conversión de divisas)
+
+## 🛠️ Instalación
+
+1. **Clonar el repositorio**:
+   ```bash
+   git clone <url-del-repositorio>
+   cd Wallet-
    ```
 
-2. 📂 Navega al directorio del proyecto:
-   ```
-   cd CampersWallet
-   ```
-
-3. ⚙️ Instala las dependencias:
-   ```
-   pip install requests
+2. **Instalar dependencias**:
+   ```bash
+   pip install -r requirements.txt
    ```
 
-## 🚀 Uso
-Para iniciar el sistema, ejecuta:
-```
-python main.py
-```
+3. **Ejecutar la aplicación**:
+   ```bash
+   python main.py
+   ```
 
-## 🎥 Demostración Visual
+## 🎯 Uso
 
-### 📱 Interfaz de Usuario
-```
-💻 Menú Principal
-┌─────────────────────────────────────┐
-│  💰 CAMPERS WALLET                  │
-│  ────────────────────────────────  │
-│  👤 1. Iniciar Sesión              │
-│  📝 2. Registrarse                 │
-│  ❌ 3. Salir                        │
-└─────────────────────────────────────┘
-```
+### Primeros Pasos
 
-### 📊 Ejemplo de Transacción
+1. **Registrarse**: Crear una nueva cuenta de usuario
+2. **Iniciar sesión**: Acceder con usuario y contraseña
+3. **Registrar cuentas**: Agregar cuentas bancarias
+4. **Realizar transacciones**: Comenzar a usar el sistema
+
+### Ejemplos de Uso
+
+#### Registro de Usuario
 ```
-💸 Transferencia Exitosa
-┌─────────────────────────────────────┐
-│  ✅ Transacción Completada          │
-│  ────────────────────────────────  │
-│  💰 Monto: $100.000 COP            │
-│  👤 Destinatario: Juan Pérez        │
-│  📅 Fecha: 2024-03-15              │
-└─────────────────────────────────────┘
+=== REGISTRO DE USUARIO ===
+Ingrese su nombre completo: Juan Pérez
+Ingrese su edad: 25
+Ingrese su correo electrónico: juan@email.com
+Ingrese su usuario: juanperez
+Ingrese una contraseña: MiContraseña123
+✅ Registro exitoso. ¡Bienvenido, Juan Pérez!
 ```
 
-## 📱 Compatibilidad
+#### Conversión de Divisas
+```
+=== Conversión COP a USD (Dólar Estadounidense) ===
+Ingrese el monto en COP a convertir: 100000
+✅ 100,000.00 COP equivale a 25.50 USD
+```
 
-### 💻 Sistemas Operativos
-- 🪟 Windows 10/11
-- 🍎 macOS 10.15+
-- 🐧 Linux (Ubuntu 20.04+)
+#### Gestión de Bolsillos
+```
+💰 Tus Bolsillos Registrados 💰
+1. Vacaciones - Saldo: $500,000.00 COP - Cuenta Origen: Bancolombia
+2. Emergencias - Saldo: $200,000.00 COP - Cuenta Origen: Davivienda
+```
 
-### 🖥️ Requisitos Mínimos
-- 💾 500MB de espacio en disco
-- 🧠 2GB de RAM
-- 🌐 Conexión a internet para actualizaciones
+## 📁 Estructura del Proyecto
 
-## 💡 Tips y Trucos
+```
+Wallet-/
+├── main.py                      # Punto de entrada principal
+├── config.py                    # Configuración centralizada
+├── utils.py                     # Funciones utilitarias
+├── data.py                      # Manejo de datos y persistencia
+├── registro.py                  # Registro de usuarios
+├── inicio_sesion.py             # Autenticación
+├── utilidades_menu.py           # Lógica de menús
+├── requirements.txt             # Dependencias del proyecto
+├── README.md                    # Documentación
+├── app.log                      # Archivo de logs
+├── gestion_cuentas/             # Gestión de cuentas bancarias
+│   ├── registro_cuentas.py
+│   ├── cuentas.json
+│   └── cuentas_registradas.json
+├── transacciones/               # Sistema de transacciones
+│   ├── transacciones.py
+│   └── movimientos.json
+├── bolsillos/                   # Bolsillos de ahorro
+│   ├── bolsillos.py
+│   └── bolsillos.json
+├── divisas/                     # Conversión de divisas
+│   └── divisas.py
+└── usuarios/                    # Datos de usuarios
+    └── registros.json
+```
 
-### 🎯 Optimiza tus Ahorros
-- 📊 Crea bolsillos específicos para cada meta
-- 💰 Establece transferencias automáticas
-- 📈 Monitorea tus gastos regularmente
+## 🔒 Seguridad
 
-### 🔍 Búsquedas Rápidas
-- 🔎 Usa filtros para encontrar transacciones específicas
-- 📅 Ordena por fecha para ver tu historial
-- 💵 Filtra por monto para encontrar transacciones grandes
+- **Contraseñas hasheadas**: Uso de SHA-256 para almacenamiento seguro
+- **Validación de entrada**: Verificación de todos los datos de usuario
+- **Manejo de errores**: Gestión robusta de excepciones
+- **Logs de actividad**: Registro de operaciones importantes
 
-### 🎨 Personalización
-- 🌈 Cambia los colores de la interfaz
-- 📱 Ajusta el tamaño de la letra
-- 🔔 Configura notificaciones
+## 🛡️ Características de Seguridad
 
-## ❓ Preguntas Frecuentes
+### Validación de Contraseñas
+- Mínimo 8 caracteres
+- Al menos un número
+- Al menos una letra mayúscula
+- Al menos una letra minúscula
 
-### 💡 ¿Cómo puedo recuperar mi contraseña?
-Si olvidaste tu contraseña, por seguridad deberás crear una nueva cuenta. Recuerda guardar tus credenciales en un lugar seguro.
+### Validación de Datos
+- Verificación de formato de email
+- Validación de edad mínima
+- Comprobación de nombres únicos
+- Verificación de fondos antes de transacciones
 
-### 💰 ¿Hay límite de transacciones?
-No hay límite en el número de transacciones, pero cada banco puede tener sus propias restricciones.
+## 🔧 Configuración
 
-### 🔒 ¿Es seguro el sistema?
-Sí, todos los datos se almacenan localmente y se utilizan las mejores prácticas de seguridad.
+El archivo `config.py` contiene todas las configuraciones del sistema:
 
-### 💱 ¿Las tasas de cambio son en tiempo real?
-Las tasas de cambio se actualizan diariamente desde fuentes confiables.
+- **Rutas de archivos**: Ubicaciones de datos JSON
+- **Configuración de API**: URLs para conversión de divisas
+- **Límites del sistema**: Edad mínima, longitud de contraseñas
+- **Opciones de menú**: Configuración de interfaces
 
-### 📱 ¿Funciona en dispositivos móviles?
-Actualmente el sistema está optimizado para uso en computadoras, pero estamos trabajando en una versión móvil.
+## 📊 Persistencia de Datos
 
-## 👥 Comunidad
+El sistema utiliza archivos JSON para almacenar:
+- **Usuarios**: Información de registro y autenticación
+- **Cuentas**: Datos bancarios y saldos
+- **Transacciones**: Historial completo de movimientos
+- **Bolsillos**: Estado de ahorros por usuario
 
-### 💬 Foro de Discusión
-Únete a nuestra comunidad en Discord para:
-- 💡 Compartir tips
-- 🐛 Reportar errores
-- 💭 Sugerir mejoras
-- 🤝 Ayudar a otros usuarios
+## 🐛 Solución de Problemas
 
-### 🎮 Retos Mensuales
-Participa en nuestros retos de ahorro:
-- 💰 Reto del 10%: Ahorra el 10% de tus ingresos
-- 📈 Reto de Inversión: Aprende sobre inversiones
-- 🎯 Reto de Metas: Alcanza tus objetivos financieros
+### Error de Dependencias
+```bash
+pip install -r requirements.txt
+```
 
-## 🚀 Próximas Características
+### Error de Conexión (Divisas)
+- Verificar conexión a internet
+- Revisar firewall/antivirus
+- Intentar más tarde
 
-### 📅 En Desarrollo
-- 📱 Aplicación móvil
-- 🔄 Sincronización en la nube
-- 💳 Integración con más bancos
+### Error de Archivos
+- Verificar permisos de escritura
+- Comprobar espacio en disco
+- Revisar logs en `app.log`
 
-### ⏳ Planeadas
-- 📊 Gráficos de gastos
-- 💰 Presupuestos automáticos
-- 🔔 Alertas personalizadas
-- 🌍 Soporte para más divisas
+## 🤝 Contribuciones
 
-## 🎨 Personalización Avanzada
+1. Fork el proyecto
+2. Crear una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abrir un Pull Request
 
-### 🌈 Temas
-- 🌙 Modo oscuro
-- ☀️ Modo claro
-- 🎨 Temas personalizados
+## 📝 Licencia
 
-### 🔧 Configuración
-- ⚙️ Ajustes de privacidad
-- 🔔 Notificaciones
-- 📊 Widgets del dashboard
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
-## 🎯 Guía de Contribución
+## 👨‍💻 Autor
 
-### 📝 Estándares de Código
-- 🧹 Código limpio y documentado
-- 📚 Pruebas unitarias para nuevas funcionalidades
-- 🔍 Revisión de código por pares
-- 📋 Seguir las guías de estilo PEP 8
+Desarrollado como parte del programa de formación en desarrollo de software.
 
-### 🐛 Reporte de Errores
-1. 🔍 Verifica si el error ya está reportado
-2. 📝 Describe el problema detalladamente
-3. 🎯 Incluye pasos para reproducir
-4. 📸 Adjunta capturas si es necesario
+## 🙏 Agradecimientos
 
-### 💡 Sugerencias de Mejoras
-1. 📋 Describe la mejora propuesta
-2. 💭 Explica el beneficio
-3. 🎨 Incluye ejemplos si es posible
-4. 🤝 Discute con la comunidad
-
-## 👥 Roles del Equipo
-
-### 🎯 Product Owner
-- Daniel Santiago Vinasco 
-
-### 🎮 Scrum Master
-- Daniel Santiago Vinasco
-
-### 👨‍💻 Desarrolladores
-- Daniel Santiago Vinasco
-
-
-## 🏆 Reconocimientos
-
-### 🎖️ Logros del Proyecto
-- 📈 1000+ usuarios activos
-- ⭐ 500+ estrellas en GitHub
-- 💪 100+ contribuidores
-- 🏅 Mejor Proyecto Open Source 2024
-
-### 🤝 Agradecimientos Especiales
-Gracias a todos nuestros usuarios y contribuidores que hacen posible este proyecto:
-- 👥 Comunidad de usuarios
-- 💻 Desarrolladores
-- 📝 Documentadores
-- 🐛 Reportadores de errores
+- API de Exchange Rate para tasas de cambio en tiempo real
+- Comunidad de Python por las librerías utilizadas
+- Instructores y compañeros del programa de formación
 
 ---
 
-Desarrollado con ❤️ para Campers Wallet
-
-### 📄 Creado Por:
-Este Proyecto fue desarrollado por:
-- 👨‍💻 **Daniel Santiago Vinasco**
-
-
----
-
-### ✅ ¿Qué incluye este README?
-✔ 📋 Características detalladas del sistema de gestión financiera  
-✔ 📁 Estructura del proyecto clara y organizada  
-✔ 🖥️ Código del menú principal con opciones intuitivas  
-✔ 📊 Funciones clave como gestión de cuentas, transacciones y bolsillos  
-✔ 💾 Estructura de los JSON con ejemplos detallados  
-✔ 🚀 Instalación y uso con pasos claros  
-✔ 🎨 Estética profesional con emojis y formato Markdown limpio  
-
----
-
-- 🔥 **¡Github: https://github.com/DanielSantiagoV !🚀**
+**¡Disfruta gestionando tus finanzas con Campers Wallet! 💰**

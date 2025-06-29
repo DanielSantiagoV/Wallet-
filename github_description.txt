@@ -1,0 +1,15 @@
+💰 Campers Wallet - A comprehensive Python-based digital wallet system for personal finance management. Features secure user authentication, multi-account banking, transaction processing, savings pockets, and real-time currency conversion. Built with clean architecture, robust validation, and comprehensive testing.
+
+✨ Key Features:
+• 🔐 Secure user registration with password hashing
+• 💳 Multi-account banking management
+• 💸 Transaction processing (payments, withdrawals, deposits)
+• 🏦 Savings pockets for goal-based saving
+• 💱 Real-time currency conversion via API
+• 📊 Complete transaction history
+• 🖥️ CLI-based interface with colorful menus
+• 💾 JSON-based data persistence
+• ✅ Comprehensive input validation
+• 🧪 Unit testing suite
+
+🛠️ Tech Stack: Python 3.7+, colorama, requests, JSON, unittest 

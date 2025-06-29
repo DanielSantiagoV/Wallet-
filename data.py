@@ -1,140 +1,267 @@
-# Importación de módulos necesarios
-import json  # Importa el módulo para manejo de archivos JSON
-import os    # Importa el módulo para manejo de rutas
-import logging  # Importa el módulo para logging
-from colorama import Fore, Style
-from typing import Dict, Any, Optional  # Importa tipos para type hints
+"""
+Data handling module for Campers Wallet application.
+Provides functions for loading and saving data with proper error handling.
+"""
 
-# Configuración de logging
+import json
+import os
+import logging
+import tempfile
+import shutil
+from typing import Dict, Any, Optional
+from pathlib import Path
+from colorama import Fore, Style
+import config
+from utils import print_success, print_error, print_warning, print_info
+
+# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
-    filename='app.log'
+    filename=config.LOG_FILE
 )
 
-# Variables globales para almacenar datos en memoria
-registros: Dict[str, Any] = {}  # Almacena datos de usuarios
-cuentas: Dict[str, Any] = {}  # Almacena datos de cuentas bancarias
-cuentas_registradas: Dict[str, Any] = {}  # Almacena información de cuentas registradas
-bolsillos: Dict[str, Any] = {}  # Almacena datos de bolsillos de ahorro
-movimientos: Dict[str, Any] = {}  # Almacena historial de movimientos
+# Global variables for caching data
+_registry_cache: Dict[str, Any] = {}
+_accounts_cache: Dict[str, Any] = {}
+_transactions_cache: Dict[str, Any] = {}
+_pockets_cache: Dict[str, Any] = {}
 
-def obtener_ruta_archivo(archivo: str) -> str:
+
+def get_file_path(file_type: str) -> Path:
     """
-    Obtiene la ruta completa del archivo, manejando casos especiales.
+    Get the file path for a specific data type.
     
     Args:
-        archivo (str): Nombre del archivo
+        file_type (str): Type of data file ("users", "accounts", "transactions", "pockets")
         
     Returns:
-        str: Ruta completa del archivo
+        Path: Full path to the data file
     """
-    try:
-        if archivo == "registros.json":
-            ruta_base = os.path.dirname(os.path.abspath(__file__))
-            return os.path.join(ruta_base, "usuarios", "registros.json")
-        return os.path.join(os.path.dirname(os.path.abspath(__file__)), archivo)
-    except Exception as e:
-        logging.error(f"Error al obtener ruta del archivo: {str(e)}")
-        raise
+    file_paths = {
+        "users": config.USERS_FILE,
+        "accounts": config.ACCOUNTS_FILE,
+        "registered_accounts": config.REGISTERED_ACCOUNTS_FILE,
+        "transactions": config.TRANSACTIONS_FILE,
+        "pockets": config.POCKETS_FILE
+    }
+    
+    if file_type not in file_paths:
+        raise ValueError(f"Unknown file type: {file_type}")
+    
+    return file_paths[file_type]
 
-def validar_datos(datos: Dict[str, Any]) -> bool:
+
+def ensure_directory_exists(file_path: Path) -> None:
     """
-    Valida que los datos sean un diccionario no vacío.
+    Ensure the directory for a file exists.
     
     Args:
-        datos (Dict[str, Any]): Datos a validar
+        file_path (Path): Path to the file
+    """
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+
+
+def validate_data(data: Any) -> bool:
+    """
+    Validate that data is a dictionary.
+    
+    Args:
+        data (Any): Data to validate
         
     Returns:
-        bool: True si los datos son válidos, False en caso contrario
+        bool: True if data is valid, False otherwise
     """
-    if not isinstance(datos, dict):
-        logging.error("Los datos no son un diccionario")
+    if not isinstance(data, dict):
+        logging.error(f"Invalid data type: {type(data)}, expected dict")
         return False
     return True
 
-def cargar_datos(archivo: str) -> Dict[str, Any]:
+
+def load_data(file_type: str, use_cache: bool = True) -> Dict[str, Any]:
     """
-    Función para cargar datos desde un archivo JSON.
+    Load data from a JSON file with caching and error handling.
     
     Args:
-        archivo (str): Ruta del archivo JSON a cargar
+        file_type (str): Type of data file to load
+        use_cache (bool): Whether to use cached data if available
         
     Returns:
-        Dict[str, Any]: Datos cargados del archivo o diccionario vacío si hay error
+        Dict[str, Any]: Loaded data or empty dict if error
     """
-    ruta_completa = obtener_ruta_archivo(archivo)
+    # Check cache first
+    cache_map = {
+        "users": _registry_cache,
+        "accounts": _accounts_cache,
+        "registered_accounts": _accounts_cache,  # Same cache as accounts
+        "transactions": _transactions_cache,
+        "pockets": _pockets_cache
+    }
+    
+    if use_cache and file_type in cache_map and cache_map[file_type]:
+        return cache_map[file_type].copy()
+    
+    file_path = get_file_path(file_type)
     
     try:
-        if not os.path.exists(ruta_completa):
-            raise FileNotFoundError(f"El archivo {ruta_completa} no existe")
-            
-        with open(ruta_completa, "r", encoding='utf-8') as file:
-            datos = json.load(file)
-            if not validar_datos(datos):
-                raise ValueError("Los datos cargados no son válidos")
-                
-            logging.info(f"Archivo {ruta_completa} cargado exitosamente")
-            print(f"\n{Fore.GREEN}✅ Archivo cargado exitosamente: {ruta_completa}{Style.RESET_ALL}\n")
-            return datos
-            
-    except FileNotFoundError:
-        mensaje = f"\n{Fore.YELLOW}🔍 ⚠️  No se encontró el archivo {ruta_completa}"
-        print(mensaje)
-        print(f"{Fore.CYAN}📂 Se iniciará con una base de datos vacía.{Style.RESET_ALL}\n")
-        logging.warning(f"Archivo no encontrado: {ruta_completa}")
-        return {}
+        if not file_path.exists():
+            logging.warning(f"File not found: {file_path}")
+            print_warning(f"Archivo no encontrado: {file_path.name}")
+            print_info("Se iniciará con una base de datos vacía.")
+            return {}
         
-    except json.JSONDecodeError:
-        mensaje = f"\n{Fore.RED}❌ 🚫 Error: El archivo {ruta_completa} está corrupto o tiene un formato inválido"
-        print(mensaje)
-        print(f"{Fore.CYAN}📂 Se iniciará con una base de datos vacía.{Style.RESET_ALL}\n")
-        logging.error(f"Error al decodificar JSON en {ruta_completa}")
+        with open(file_path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+            
+        if not validate_data(data):
+            raise ValueError("Invalid data format")
+        
+        # Update cache
+        if file_type in cache_map:
+            cache_map[file_type] = data.copy()
+        
+        logging.info(f"Data loaded successfully from {file_path}")
+        return data
+        
+    except json.JSONDecodeError as e:
+        logging.error(f"JSON decode error in {file_path}: {e}")
+        print_error(f"Error: El archivo {file_path.name} está corrupto")
+        print_info("Se iniciará con una base de datos vacía.")
         return {}
         
     except Exception as e:
-        mensaje = f"\n{Fore.RED}❌ ⚠️ Error inesperado al cargar {ruta_completa}:"
-        print(mensaje)
-        print(f"{Fore.CYAN}🔍 Detalles del error: {str(e)}{Style.RESET_ALL}\n")
-        logging.error(f"Error inesperado al cargar {ruta_completa}: {str(e)}")
+        logging.error(f"Unexpected error loading {file_path}: {e}")
+        print_error(f"Error inesperado al cargar {file_path.name}")
+        print_info("Se iniciará con una base de datos vacía.")
         return {}
+
+
+def save_data(data: Dict[str, Any], file_type: str, atomic: bool = True) -> bool:
+    """
+    Save data to a JSON file with atomic write support.
+    
+    Args:
+        data (Dict[str, Any]): Data to save
+        file_type (str): Type of data file to save
+        atomic (bool): Whether to use atomic write (recommended)
+        
+    Returns:
+        bool: True if save was successful, False otherwise
+    """
+    if not validate_data(data):
+        print_error("Error: Los datos deben ser un diccionario")
+        return False
+    
+    file_path = get_file_path(file_type)
+    ensure_directory_exists(file_path)
+    
+    try:
+        if atomic:
+            # Atomic write using temporary file
+            with tempfile.NamedTemporaryFile(mode='w', delete=False, encoding='utf-8') as temp_file:
+                json.dump(data, temp_file, indent=4, ensure_ascii=False)
+                temp_file_path = temp_file.name
+            
+            # Move temporary file to final location
+            shutil.move(temp_file_path, file_path)
+        else:
+            # Direct write (not atomic)
+            with open(file_path, 'w', encoding='utf-8') as file:
+                json.dump(data, file, indent=4, ensure_ascii=False)
+        
+        # Update cache
+        cache_map = {
+            "users": _registry_cache,
+            "accounts": _accounts_cache,
+            "registered_accounts": _accounts_cache,
+            "transactions": _transactions_cache,
+            "pockets": _pockets_cache
+        }
+        
+        if file_type in cache_map:
+            cache_map[file_type] = data.copy()
+        
+        logging.info(f"Data saved successfully to {file_path}")
+        print_success(f"Datos guardados exitosamente en {file_path.name}")
+        return True
+        
+    except Exception as e:
+        logging.error(f"Error saving data to {file_path}: {e}")
+        print_error(f"Error al guardar datos en {file_path.name}")
+        return False
+
+
+def clear_cache(file_type: Optional[str] = None) -> None:
+    """
+    Clear the data cache.
+    
+    Args:
+        file_type (Optional[str]): Specific cache to clear, or None for all
+    """
+    if file_type is None:
+        global _registry_cache, _accounts_cache, _transactions_cache, _pockets_cache
+        _registry_cache.clear()
+        _accounts_cache.clear()
+        _transactions_cache.clear()
+        _pockets_cache.clear()
+        logging.info("All caches cleared")
+    else:
+        cache_map = {
+            "users": _registry_cache,
+            "accounts": _accounts_cache,
+            "registered_accounts": _accounts_cache,
+            "transactions": _transactions_cache,
+            "pockets": _pockets_cache
+        }
+        
+        if file_type in cache_map:
+            cache_map[file_type].clear()
+            logging.info(f"Cache cleared for {file_type}")
+
+
+# Backward compatibility functions
+def cargar_datos(archivo: str) -> Dict[str, Any]:
+    """
+    Legacy function for loading data (maintains backward compatibility).
+    
+    Args:
+        archivo (str): File path (legacy format)
+        
+    Returns:
+        Dict[str, Any]: Loaded data
+    """
+    # Map legacy file paths to new file types
+    file_mapping = {
+        "registros.json": "users",
+        "gestion_cuentas/cuentas.json": "accounts",
+        "gestion_cuentas/cuentas_registradas.json": "registered_accounts",
+        "transacciones/movimientos.json": "transactions",
+        "bolsillos/bolsillos.json": "pockets"
+    }
+    
+    file_type = file_mapping.get(archivo, "users")
+    return load_data(file_type)
+
 
 def guardar_datos(datos: Dict[str, Any], archivo: str) -> bool:
     """
-    Función para guardar datos en un archivo JSON.
+    Legacy function for saving data (maintains backward compatibility).
     
     Args:
-        datos (Dict[str, Any]): Datos a guardar
-        archivo (str): Ruta del archivo donde se guardarán los datos
+        datos (Dict[str, Any]): Data to save
+        archivo (str): File path (legacy format)
         
     Returns:
-        bool: True si se guardó exitosamente, False en caso contrario
+        bool: True if save was successful
     """
-    if not validar_datos(datos):
-        print(f"\n{Fore.RED}❌ 🚫 Error: Los datos deben ser un diccionario{Style.RESET_ALL}\n")
-        logging.error("Intento de guardar datos que no son un diccionario")
-        return False
-        
-    ruta_completa = obtener_ruta_archivo(archivo)
+    # Map legacy file paths to new file types
+    file_mapping = {
+        "registros.json": "users",
+        "gestion_cuentas/cuentas.json": "accounts",
+        "gestion_cuentas/cuentas_registradas.json": "registered_accounts",
+        "transacciones/movimientos.json": "transactions",
+        "bolsillos/bolsillos.json": "pockets"
+    }
     
-    try:
-        # Asegurarse de que el directorio existe
-        os.makedirs(os.path.dirname(ruta_completa), exist_ok=True)
-        
-        if datos:
-            with open(ruta_completa, "w", encoding='utf-8') as file:
-                json.dump(datos, file, indent=4, ensure_ascii=False)
-            logging.info(f"Datos guardados exitosamente en {ruta_completa}")
-            print(f"\n{Fore.GREEN}✅ Datos guardados exitosamente en: {ruta_completa}{Style.RESET_ALL}\n")
-            return True
-        else:
-            print(f"\n{Fore.YELLOW}⚠️ 📂 Advertencia: No hay datos para guardar en {ruta_completa}{Style.RESET_ALL}\n")
-            logging.warning(f"No hay datos para guardar en {ruta_completa}")
-            return False
-            
-    except Exception as e:
-        mensaje = f"\n{Fore.RED}❌ ⚠️ Error al guardar datos en {ruta_completa}:"
-        print(mensaje)
-        print(f"{Fore.CYAN}🔍 Detalles del error: {str(e)}{Style.RESET_ALL}\n")
-        logging.error(f"Error al guardar datos en {ruta_completa}: {str(e)}")
-        return False
+    file_type = file_mapping.get(archivo, "users")
+    return save_data(datos, file_type)
